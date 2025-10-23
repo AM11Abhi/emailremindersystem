@@ -1,19 +1,18 @@
 const nodemailer = require('nodemailer');
 
+// Create transporter using SendGrid
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // use SSL
+  service: 'SendGrid',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: 'apikey', // this is literal 'apikey'
+    pass: process.env.SENDGRID_API_KEY
   }
 });
 
 const sendEmail = async (to, subject, text) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM, // your verified sender
       to,
       subject,
       text
@@ -24,7 +23,6 @@ const sendEmail = async (to, subject, text) => {
     return info;
   } catch (error) {
     console.error('Email sending failed:', error);
-    console.log(transporter)
     throw error;
   }
 };
