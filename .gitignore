@@ -1,0 +1,36 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python / Node / backend related
+__pycache__/
+*.pyc
+env/
+venv/
+node_modules/
+
+# IDE / editor files
+*.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Sensitive files
+*.env
+credentials.json
+*.key
+*.pem
+
+# Database files (if any local db is used)
+*.sqlite
+*.db
+
+# Excel / CSV generated files (optional)
+*.csv
+*.xlsx
+
+# Nested git repositories
+**/.git/
