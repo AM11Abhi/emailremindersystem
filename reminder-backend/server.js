@@ -42,14 +42,10 @@ mongoose.connect(process.env.MONGO_URI)
 // Scheduler (your existing cron job)
 cron.schedule('* * * * *', async () => {
   try {
-    const now = new Date();
-    const currentDate = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().slice(0, 5);
-
+    const now = new Date(); // UTC
     const pendingReminders = await Reminder.find({
       status: 'Pending',
-      date: { $lte: currentDate },
-      time: { $lte: currentTime }
+      reminderDate: { $lte: now }
     });
 
     for (const reminder of pendingReminders) {

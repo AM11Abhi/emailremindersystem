@@ -1,11 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const Reminder = require('../models/Reminder');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // Create a reminder
 router.post('/', async (req, res) => {
   try {
-    const reminder = new Reminder(req.body);
+    const { email, task, date, time } = req.body; // date + time in IST from frontend
+
+    // Convert IST to UTC
+    const reminderDate = dayjs.tz(`${date} ${time}`, 'Asia/Kolkata').utc().toDate();
+
+    const reminder = new Reminder({
+      email,
+      task,
+      reminderDate
+    });
+
     await reminder.save();
     res.status(201).json(reminder);
   } catch (error) {
@@ -16,7 +32,7 @@ router.post('/', async (req, res) => {
 // Get all reminders
 router.get('/', async (req, res) => {
   try {
-    const reminders = await Reminder.find().sort({ date: 1, time: 1 });
+    const reminders = await Reminder.find().sort({ reminderDate: 1 });
     res.json(reminders);
   } catch (error) {
     res.status(500).json({ error: error.message });

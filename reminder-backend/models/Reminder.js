@@ -10,12 +10,8 @@ const reminderSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  date: {
-    type: String,
-    required: true
-  },
-  time: {
-    type: String,
+  reminderDate: {          // Replace date + time with a single UTC Date
+    type: Date,
     required: true
   },
   status: {
