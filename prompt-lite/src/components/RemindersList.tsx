@@ -1,24 +1,12 @@
-/**
- * RemindersList Component
- * 
- * Purpose: Displays all upcoming email reminders
- * Features:
- * - Fetches reminders from backend API
- * - Shows task, date, time, and status
- * - Status badges (Pending/Sent) with color coding
- * - Responsive card/table layout
- * - Auto-refreshes when new reminder is added
- */
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, FileText } from "lucide-react";
 import { toast } from "sonner";
+import reminderApi from '../services/reminderApi';
 
 interface Reminder {
   _id?: string;
-  id?: string;
   email: string;
   task: string;
   date: string;
@@ -34,23 +22,18 @@ export const RemindersList = ({ refreshTrigger }: RemindersListProps) => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch reminders from backend
   const fetchReminders = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/reminders");
-      
-      if (!response.ok) {
-        throw new Error("Failed to fetch reminders");
-      }
-
-      const data = await response.json();
+      const data = await reminderApi.getAll();
       setReminders(data);
     } catch (error) {
       console.error("Error fetching reminders:", error);
-      // If backend isn't available, show mock data for demo purposes
+      toast.error("Failed to fetch reminders. Showing demo data.");
+      // Mock demo data if backend fails
       setReminders([
         {
-          id: "1",
+          _id: "1",
           email: "demo@example.com",
           task: "Submit project report",
           date: "2025-10-25",
@@ -58,7 +41,7 @@ export const RemindersList = ({ refreshTrigger }: RemindersListProps) => {
           status: "Pending",
         },
         {
-          id: "2",
+          _id: "2",
           email: "demo@example.com",
           task: "Team meeting preparation",
           date: "2025-10-24",
@@ -71,7 +54,18 @@ export const RemindersList = ({ refreshTrigger }: RemindersListProps) => {
     }
   };
 
-  // Fetch on mount and when refreshTrigger changes
+  // Optional: delete reminder function
+  const handleDelete = async (id: string) => {
+    try {
+      await reminderApi.delete(id);
+      toast.success("Reminder deleted successfully");
+      fetchReminders(); // refresh list
+    } catch (error) {
+      console.error("Error deleting reminder:", error);
+      toast.error("Failed to delete reminder");
+    }
+  };
+
   useEffect(() => {
     fetchReminders();
   }, [refreshTrigger]);
@@ -105,12 +99,12 @@ export const RemindersList = ({ refreshTrigger }: RemindersListProps) => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold text-foreground">Upcoming Reminders</h2>
-      
+
       {/* Mobile: Card layout */}
       <div className="grid gap-4 sm:hidden">
         {reminders.map((reminder) => (
           <Card
-            key={reminder._id || reminder.id}
+            key={reminder._id}
             className="p-4 space-y-3 shadow-[var(--shadow-sm)] border-border/50 hover:shadow-[var(--shadow-md)] transition-shadow"
           >
             <div className="flex items-start justify-between gap-2">
@@ -131,7 +125,7 @@ export const RemindersList = ({ refreshTrigger }: RemindersListProps) => {
                 {reminder.status}
               </Badge>
             </div>
-            
+
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5" />
@@ -170,7 +164,7 @@ export const RemindersList = ({ refreshTrigger }: RemindersListProps) => {
               <tbody className="divide-y divide-border/50">
                 {reminders.map((reminder) => (
                   <tr
-                    key={reminder._id || reminder.id}
+                    key={reminder._id}
                     className="hover:bg-muted/30 transition-colors"
                   >
                     <td className="py-3 px-4 text-sm text-foreground font-medium">

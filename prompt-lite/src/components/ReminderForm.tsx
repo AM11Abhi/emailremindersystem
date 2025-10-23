@@ -1,15 +1,3 @@
-/**
- * ReminderForm Component
- * 
- * Purpose: Collects user input for creating email reminders
- * Features:
- * - Email, task description, date, and time inputs
- * - Client-side form validation
- * - Posts reminder data to backend API
- * - Shows success toast on submission
- * - Clears form after successful submission
- */
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Calendar, Clock, Mail, FileText } from "lucide-react";
+import reminderApi, { ReminderData } from '../services/reminderApi';
 
 interface ReminderFormProps {
   onReminderCreated: () => void;
@@ -32,7 +21,7 @@ export const ReminderForm = ({ onReminderCreated }: ReminderFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!email || !task || !date || !time) {
       toast.error("Please fill in all fields");
@@ -49,25 +38,10 @@ export const ReminderForm = ({ onReminderCreated }: ReminderFormProps) => {
     setIsSubmitting(true);
 
     try {
-      // Send POST request to backend
-      const response = await fetch("http://localhost:5000/api/reminders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          task,
-          date,
-          time,
-        }),
-      });
+      // Use reminderApi to create the reminder
+      const reminderData: ReminderData = { email, task, date, time };
+      await reminderApi.create(reminderData);
 
-      if (!response.ok) {
-        throw new Error("Failed to create reminder");
-      }
-
-      // Success! Show toast and reset form
       toast.success("Reminder Set Successfully!", {
         description: `We'll remind you about "${task}" on ${date} at ${time}`,
       });
@@ -101,7 +75,6 @@ export const ReminderForm = ({ onReminderCreated }: ReminderFormProps) => {
           <Input
             id="email"
             type="email"
-            name="email"
             placeholder="your.email@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -117,7 +90,6 @@ export const ReminderForm = ({ onReminderCreated }: ReminderFormProps) => {
           </Label>
           <Textarea
             id="task"
-            name="task"
             placeholder="What would you like to be reminded about?"
             value={task}
             onChange={(e) => setTask(e.target.value)}
@@ -135,7 +107,6 @@ export const ReminderForm = ({ onReminderCreated }: ReminderFormProps) => {
             <Input
               id="date"
               type="date"
-              name="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               className="h-11 bg-background border-border/60 focus:border-primary transition-colors"
@@ -151,7 +122,6 @@ export const ReminderForm = ({ onReminderCreated }: ReminderFormProps) => {
             <Input
               id="time"
               type="time"
-              name="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
               className="h-11 bg-background border-border/60 focus:border-primary transition-colors"

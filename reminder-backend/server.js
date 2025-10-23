@@ -8,12 +8,18 @@ const Reminder = require('./models/Reminder');
 const { sendEmail } = require('./utils/emailService');
 const reminderRoutes = require('./routes/reminders'); // import routes
 
-
+const cors = require('cors');
 const app = express();
 
 // Middleware
 app.use(express.json()); // <-- parses JSON bodies
 app.use(express.urlencoded({ extended: true })); // optional for form data
+// Add CORS middleware here
+app.use(cors({
+  origin: 'http://localhost:8080', // <-- your frontend URL
+  methods: ['GET','POST','PUT','DELETE'],
+  credentials: true
+}));
 
 // Routes
 app.use('/api/reminders', reminderRoutes); // <-- make routes available
