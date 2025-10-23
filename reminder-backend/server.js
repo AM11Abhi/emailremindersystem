@@ -15,9 +15,10 @@ const app = express();
 app.use(express.json()); // <-- parses JSON bodies
 app.use(express.urlencoded({ extended: true })); // optional for form data
 // Add CORS middleware here
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:8080';
 app.use(cors({
-  origin: 'http://localhost:8080', // <-- your frontend URL
-  methods: ['GET','POST','PUT','DELETE'],
+  origin: CLIENT_ORIGIN,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
