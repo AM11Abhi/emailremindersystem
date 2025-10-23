@@ -1,30 +1,21 @@
-const nodemailer = require('nodemailer');
+// emailService.js
+const sgMail = require('@sendgrid/mail');
 
-// Use SendGrid SMTP directly
-const transporter = nodemailer.createTransport({
-  host: 'smtp.sendgrid.net',
-  port: 587,           // TLS port that works on Render
-  secure: false,       // TLS will be used automatically with STARTTLS
-  auth: {
-    user: 'apikey',    // literal string 'apikey'
-    pass: process.env.SENDGRID_API_KEY
-  }
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmail = async (to, subject, text) => {
   try {
-    const mailOptions = {
-      from: process.env.EMAIL_FROM, // verified sender in SendGrid
+    const msg = {
       to,
+      from: process.env.EMAIL_FROM, // verified sender in SendGrid
       subject,
       text
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     console.log(`Email sent successfully to ${to}`);
-    return info;
   } catch (error) {
-    console.error('Email sending failed:', error);
+    console.error('Email sending failed:', error.response ? error.response.body : error);
     throw error;
   }
 };
