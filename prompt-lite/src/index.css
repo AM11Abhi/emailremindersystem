@@ -123,7 +123,18 @@ All colors MUST be HSL.
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
-
+body {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 300; /* lighter weight */
+  font-style: normal;
+}
+.fredoka-semibold {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600; /* SemiBold */
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
 @layer base {
   * {
     @apply border-border;

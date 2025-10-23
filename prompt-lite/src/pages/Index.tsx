@@ -59,6 +59,7 @@ import { useState } from "react";
 import { ReminderForm } from "@/components/ReminderForm";
 import { RemindersList } from "@/components/RemindersList";
 import { Bell } from "lucide-react";
+import emailBg from "@/assets/email-bg.jpg";
 
 const Index = () => {
   // Counter to trigger refresh of reminders list when a new one is created
@@ -70,20 +71,34 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container max-w-4xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-accent mb-4 shadow-[var(--shadow-md)]">
-            <Bell className="w-8 h-8 text-primary-foreground" />
+    <div className="min-h-screen bg-background">
+      {/* Hero Section with Background */}
+      <div 
+        className="relative bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${emailBg})` }}
+      >
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background"></div>
+        
+        {/* Header Content */}
+        <div className="relative container max-w-4xl mx-auto px-4 py-16 md:py-24">
+          <div className="text-center">
+            {/*<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 mb-4 shadow-lg">
+            <Bell className="w-8 h-8 text-white" />
+            </div>*/}
+            <h1 className="text-4xl md:text-5xl fredoka-semibold mb-3 text-white drop-shadow-lg">
+              Email Reminder System
+            </h1>
+            <p className="text-white/90 text-lg drop-shadow-md fredoka-semibold">
+              Never miss an important task. Set reminders and get notified via email.
+            </p>
+
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Email Reminder System
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Never miss an important task. Set reminders and get notified via email.
-          </p>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container max-w-4xl mx-auto px-4 py-12">
 
         {/* Form Section */}
         <div className="mb-12">
@@ -94,7 +109,7 @@ const Index = () => {
         <RemindersList refreshTrigger={refreshTrigger} />
 
         {/* Footer with Backend Info */}
-        <div className="mt-12 p-6 rounded-xl bg-muted/30 border border-border/50">
+        {/*<div className="mt-12 p-6 rounded-xl bg-muted/30 border border-border/50">
           <h3 className="font-semibold text-foreground mb-2">Backend Status</h3>
           <p className="text-sm text-muted-foreground">
             Make sure your backend server is running on{" "}
@@ -105,7 +120,7 @@ const Index = () => {
           <p className="text-xs text-muted-foreground mt-2">
             If the backend is not connected, demo data will be displayed.
           </p>
-        </div>
+        </div>*/}
       </div>
     </div>
   );
