@@ -1,10 +1,12 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter using SendGrid
+// Use SendGrid SMTP directly
 const transporter = nodemailer.createTransport({
-  service: 'SendGrid',
+  host: 'smtp.sendgrid.net',
+  port: 587,           // TLS port that works on Render
+  secure: false,       // TLS will be used automatically with STARTTLS
   auth: {
-    user: 'apikey', // this is literal 'apikey'
+    user: 'apikey',    // literal string 'apikey'
     pass: process.env.SENDGRID_API_KEY
   }
 });
@@ -12,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, text) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_FROM, // your verified sender
+      from: process.env.EMAIL_FROM, // verified sender in SendGrid
       to,
       subject,
       text
